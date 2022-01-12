@@ -33,6 +33,25 @@ bool ConvertAtenUnaryOp(
   return true;
 }
 
+bool ConvertAtenHardtanh(
+    MhloConversionContext& ctx,
+    const torch::jit::Node& node) {
+  auto loc = GetNodeLocation(ctx, node);
+  auto torch_inp = node.input(0);
+  auto torch_out = node.output(0);
+  auto mlir_val = ctx.GetMlirValue(torch_inp);
+
+  auto builder = *ctx.builder;
+  // Clamp argument between -1 and 1.
+  auto lb = mlir::chlo::getConstantLike(builder, loc, -1.0, mlir_val);
+  auto ub = mlir::chlo::getConstantLike(builder, loc, 1.0, mlir_val);
+  auto result = builder.create<mlir::mhlo::ClampOp>(
+      loc, mlir_val.getType(), lb, mlir_val, ub);
+
+  ctx.value_map[torch_out] = result.getResult();
+  return true;
+}
+
 bool ConvertAtenIdentity(
     MhloConversionContext& ctx,
     const torch::jit::Node& node) {
@@ -68,6 +87,9 @@ auto mhlo_conversion =
         .pattern(
             "aten::tanh(Tensor self) -> Tensor",
             ConvertAtenUnaryOp<mlir::mhlo::TanhOp>)
+        .pattern(
+            "aten::hardtanh(Tensor self) -> Tensor",
+            ConvertAtenHardtanh)
         .pattern(
             "aten::neg(Tensor self) -> Tensor",
             ConvertAtenUnaryOp<mlir::mhlo::NegOp>)
