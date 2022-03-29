@@ -14,7 +14,9 @@
 #include <sstream>
 
 #include "dnnl_threadpool_iface.hpp"
+#if defined(TAO_X86)
 #include "mkl.h"
+#endif
 #include "tensorflow/compiler/mlir/xla/ral/context/common_context_impl.h"
 #include "tensorflow/compiler/mlir/xla/ral/context/context_util.h"
 #include "tensorflow/compiler/mlir/xla/ral/context/mkldnn/ideep/ideep.hpp"
@@ -472,6 +474,9 @@ template <typename Tinput, int N = 2, typename Tweight = Tinput,
 void mkl_ral_gemm(ExecutionContext* ctx, void* stream_handle,
                   MemRefType<Tinput, N> A, MemRefType<Tweight, N> B,
                   MemRefType<Toutput, N> C, bool tp_a, bool tp_b) {
+#if not defined(TAO_X86)
+  ctx->signalError(Context::FAILURE, "mkl_ral_gemm not impl");
+#else
   int m = tp_a ? A.sizes[1] : A.sizes[0];
   int k = tp_a ? A.sizes[0] : A.sizes[1];
   int n = tp_b ? B.sizes[0] : B.sizes[1];
@@ -481,6 +486,7 @@ void mkl_ral_gemm(ExecutionContext* ctx, void* stream_handle,
               reinterpret_cast<Tinput*>(A.data), A.strides[0],
               reinterpret_cast<Tweight*>(B.data), B.strides[0], 0.0,
               reinterpret_cast<Toutput*>(C.data), C.strides[0]);
+#endif
 }
 
 template <typename Tinput, int N = 2, typename Tweight = Tinput,
@@ -568,6 +574,9 @@ template <typename Tinput, int N, typename Tweight = Tinput,
 void mkl_ral_batch_gemm(ExecutionContext* ctx, void* stream_handle,
                         MemRefType<Tinput, N> A, MemRefType<Tweight, N> B,
                         MemRefType<Toutput, N> C, bool tp_a, bool tp_b) {
+#if not defined(TAO_X86)
+  ctx->signalError(Context::FAILURE, "mkl_ral_batch_gemm not impl");
+#else
   int b = GetBatchSize(A);
   int m = tp_a ? A.sizes[N - 1] : A.sizes[N - 2];
   int n = tp_b ? B.sizes[N - 2] : B.sizes[N - 1];
@@ -585,6 +594,7 @@ void mkl_ral_batch_gemm(ExecutionContext* ctx, void* stream_handle,
   cblas_sgemm_batch_strided(CblasRowMajor, ta, tb, m, n, k, alpha, A.data, ldA,
                             m * k, B.data, ldB, k * n, beta, C.data, ldC, m * n,
                             b);
+#endif
 }
 
 template <typename Tinput, int N, typename Tweight = Tinput,

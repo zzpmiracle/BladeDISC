@@ -251,28 +251,51 @@ def mkldnn_build_dir(root=None):
 def mkl_install_dir(root):
     return os.path.join(mkldnn_build_dir(root), "intel")
 
+def acl_install_dir(root):
+    return os.path.join(mkldnn_build_dir(root), "acl")
 
-def config_mkldnn(root, cxx11_abi):
+def acl_root_dir(root):
+    return os.path.join(acl_install_dir(root), 'ComputeLibrary')
+
+def config_mkldnn(root, args):
+    return
     build_dir = mkldnn_build_dir(root)
     ensure_empty_dir(build_dir, clear_hidden=False)
     mkl_dir = mkl_install_dir(root)
+    acl_dir = acl_install_dir(root)
+    acl_root = acl_root_dir(root)
     ensure_empty_dir(mkl_dir, clear_hidden=False)
-    # download mkl-lib/include
-    with cwd(mkl_dir):
-        download_cmd = """
-          unset HTTPS_PROXY
-          curl -fsSL https://hlomodule.oss-cn-zhangjiakou.aliyuncs.com/mkl_package/mkl-static-2022.0.1-intel_117.tar.bz2  | tar xjv
-          curl -fsSL https://hlomodule.oss-cn-zhangjiakou.aliyuncs.com/mkl_package/mkl-include-2022.0.1-h8d4b97c_803.tar.bz2 | tar xjv
-        """
-        execute(download_cmd)
+    ensure_empty_dir(acl_dir, clear_hidden=False)
+    if args.x86:
+        with cwd(mkl_dir):
+            # download mkl-lib/include
+            download_cmd = """
+              unset HTTPS_PROXY
+              curl -fsSL https://hlomodule.oss-cn-zhangjiakou.aliyuncs.com/mkl_package/mkl-static-2022.0.1-intel_117.tar.bz2  | tar xjv
+              curl -fsSL https://hlomodule.oss-cn-zhangjiakou.aliyuncs.com/mkl_package/mkl-include-2022.0.1-h8d4b97c_803.tar.bz2 | tar xjv
+            """
+            execute(download_cmd)
+
+    if args.aarch64:
+        with cwd(acl_dir):
+            # downlaod and build acl for onednn
+            execute('../../oneDNN/.github/automation/build_acl.sh  --version 22.02 --arch arm64-v8a --root-dir {}'.format(acl_root))
 
     with cwd(build_dir):
         cc = which("gcc")
         cxx = which("g++")
         # always link patine statically
-        cmake_cmd = "CC={} CXX={} cmake .. -DMKL_ROOT={}".format(cc, cxx, mkl_dir)
-        if cxx11_abi:
-            cmake_cmd += " -DUSE_CXX11_ABI=ON"
+        flags = " -DMKL_ROOT={} ".format(mkl_dir)
+        envs = " CC={} CXX={} ".format(cc, cxx)
+        if args.aarch64:
+            envs += " ACL_ROOT_DIR={} ".format(acl_root)
+            flags += " -DDNNL_AARCH64_USE_ACL=ON "
+
+        if args.ral_cxx11_abi:
+            flags += " -DUSE_CXX11_ABI=ON"
+
+        cmake_cmd = "{}  cmake .. {}".format(envs, flags)
+
         logger.info("configuring mkldnn ......")
         execute(cmake_cmd)
         logger.info("mkldnn configure success.")
@@ -296,8 +319,10 @@ if __name__ == "__main__":
         help="Build with cxx11 abi or not",
     )
     args = parser.parse_args()
+    # backward compatibility
+    args.ral_cxx11_abi = cxx11_abi
 
     root = get_source_root_dir()
     symlink_files(root)
-    config_mkldnn(root, args.cxx11_abi)
+    config_mkldnn(root, args)
     build_mkldnn(root)

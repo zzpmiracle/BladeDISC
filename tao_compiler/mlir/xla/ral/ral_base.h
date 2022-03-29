@@ -20,6 +20,7 @@
 
 #include <functional>
 #include <vector>
+#include <cstdint>
 
 namespace tao {
 namespace ral {

@@ -155,6 +155,10 @@ def configure_compiler(root, args):
                 f.write("\n")
                 f.write("build --remote_cache={}\n".format(token))
                 f.write("test --remote_cache={}\n".format(token))
+        with open(".tf_configure.bazelrc", "a") as f:
+            f.write("\n")
+            bazel_startup_opts = "--host_jvm_args=-Djdk.http.auth.tunneling.disabledSchemes="
+            f.write("startup {}\n".format(bazel_startup_opts))
     logger.info("Stage [configure] success.")
 
 @time_stage()
@@ -192,6 +196,8 @@ def configure(root, args):
         )
         if args.enable_mkldnn:
             flags +=" -DMKL_ROOT={} ".format(mkl_install_dir(root))
+        flags += " -DTAO_X86={}".format(args.x86)
+        flags += " -DTAO_AARCH64={}".format(args.aarch64)
 
         cmake_cmd = (
             "CC={} CXX={} cmake .. -DPYTHON={}/bin/{} {}".format(
@@ -274,7 +280,10 @@ def build_tao_compiler(root, args):
         )
 
         if args.cpu_only:
-            flag = '--cxxopt=-DTAO_CPU_ONLY --config=release_cpu_linux'
+            if args.aarch64:
+                flag = '--config=disc_aarch64'
+            else:
+                flag = '--cxxopt=-DTAO_CPU_ONLY --config=release_cpu_linux'
         elif args.dcu:
             flag = "--config=dcu"
         else:
@@ -359,7 +368,7 @@ def build_mlir_ral(root, args):
 
 @time_stage()
 def test_tao_compiler(root, args):
-    BAZEL_BUILD_CMD = "bazel build --experimental_multi_threaded_digest --define framework_shared_object=false --test_timeout=600 --javabase=@bazel_tools//tools/jdk:remote_jdk11"
+    BAZEL_BUILD_CMD = "bazel build -s --experimental_multi_threaded_digest --define framework_shared_object=false --test_timeout=600 --javabase=@bazel_tools//tools/jdk:remote_jdk11"
     BAZEL_TEST_CMD = "bazel test --experimental_multi_threaded_digest --define framework_shared_object=false --test_timeout=600 --javabase=@bazel_tools//tools/jdk:remote_jdk11"
     BAZEL_TEST_CMD += ci_build_flag()
     BAZEL_BUILD_CMD += ci_build_flag()
@@ -393,9 +402,12 @@ def test_tao_compiler(root, args):
             )
         )
         if args.cpu_only:
-            flag = '--cxxopt="-DTAO_CPU_ONLY" --config=release_cpu_linux '
+            if args.aarch64:
+                flag = '--config=disc_aarch64 '
+            else:
+                flag = '--config=disc_cpu '
             if args.enable_mkldnn:
-                flag += ' --cxxopt="-DTAO_ENABLE_MKLDNN" --define is_mkldnn=true'
+                flag += ' --config=disc_mkldnn'
             mlir_test_list = [
                 TARGET_DISC_TRANSFORMS_TEST,
                 TARGET_DISC_E2E_TEST,
@@ -670,6 +682,12 @@ def parse_args():
         help="Build tao with dcu support only",
     )
     parser.add_argument(
+        "--aarch64",
+        required=False,
+        action="store_true",
+        help="Build tao with aarch64 support only",
+    )
+    parser.add_argument(
         "--build_in_aone",
         required=False,
         action="store_true",
@@ -709,6 +727,9 @@ def parse_args():
     # TODO(disc): support other type of CPUs.
     args.enable_mkldnn = args.cpu_only
 
+    # default is the x86 platform
+    args.x86 = (args.cpu_only and not args.aarch64)
+
     if args.stage in ["all", "configure"]:
         assert args.bridge_gcc, "--bridge-gcc is required."
         assert args.compiler_gcc, "--compiler-gcc is required."
@@ -737,7 +758,7 @@ def main():
     if stage in ["all", "configure", "configure_pytorch"]:
         if args.enable_mkldnn:
             with gcc_env(args.bridge_gcc):
-                config_mkldnn(root, args.ral_cxx11_abi)
+                config_mkldnn(root, args)
         if stage == "configure_pytorch":
             configure_pytorch(root, args)
         else:
