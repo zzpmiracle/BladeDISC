@@ -26,7 +26,7 @@ const std::string c_ft_path =
 TEST(TFSqueezeOpTest, DynamicShapeTest) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "squeeze_d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"2x1x3xf32_X"},
@@ -37,7 +37,7 @@ TEST(TFSqueezeOpTest, DynamicShapeTest) {
 TEST(TFSqueezeOpTest, StaticShapeTest) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "squeeze_s_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"2x1x3xf32_X"},
@@ -48,7 +48,7 @@ TEST(TFSqueezeOpTest, StaticShapeTest) {
 TEST(TFSqueezeOpTest, PartialDynamicShapeTest) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "squeeze_s_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"2x1x3xf32_X"},

@@ -368,7 +368,7 @@ def build_mlir_ral(root, args):
 
 @time_stage()
 def test_tao_compiler(root, args):
-    BAZEL_BUILD_CMD = "bazel build -s --experimental_multi_threaded_digest --define framework_shared_object=false --test_timeout=600 --javabase=@bazel_tools//tools/jdk:remote_jdk11"
+    BAZEL_BUILD_CMD = "bazel build --experimental_multi_threaded_digest --define framework_shared_object=false --test_timeout=600 --javabase=@bazel_tools//tools/jdk:remote_jdk11"
     BAZEL_TEST_CMD = "bazel test --experimental_multi_threaded_digest --define framework_shared_object=false --test_timeout=600 --javabase=@bazel_tools//tools/jdk:remote_jdk11"
     BAZEL_TEST_CMD += ci_build_flag()
     BAZEL_BUILD_CMD += ci_build_flag()
@@ -376,7 +376,7 @@ def test_tao_compiler(root, args):
         # NOTE: using the lower parallel jobs on CI host to avoid OOM
         BAZEL_TEST_CMD += " --jobs=10"
     else:
-        BAZEL_TEST_CMD += " --jobs=30"
+        BAZEL_TEST_CMD += " --jobs=16"
 
     TARGET_DISC_TRANSFORMS_TEST = "//tensorflow/compiler/mlir/disc/transforms/tests/..."
     TARGET_DISC_E2E_TEST = "//tensorflow/compiler/mlir/disc/tests/..."

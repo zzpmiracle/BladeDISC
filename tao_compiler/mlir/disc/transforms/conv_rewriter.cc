@@ -372,6 +372,7 @@ struct DiscConvRewriterPass
     MaybeRewriteFilterFormat(params);
     MaybeRewriteOutputFormat(params);
     UpdateAttributes(params);
+    return success();
   }
 
   LogicalResult convToDynamicConv() {
@@ -399,7 +400,10 @@ struct DiscConvRewriterPass
     // unnecessary transpose ops. We may implement another layout optimize pass
     // in case necessary.
     for (auto& op : ops) {
-      RewriteOp(op);
+      if (failed(RewriteOp(op))) {
+        signalPassFailure();
+        return;
+      }
     }
   }
 };

@@ -4,7 +4,7 @@ build:disc --define framework_shared_object=false --experimental_multi_threaded_
 build:disc_cpu --config=disc --config=release_cpu_linux --cxxopt=-DTAO_CPU_ONLY --cxxopt=-DTAO_X86 --define disc_use_x86=true
 build:disc_cuda --config=disc --config=cuda
 build:disc_dcu --config=disc --config=dcu
-build:disc_aarch64 --config=disc --cxxopt=-DTAO_CPU_ONLY --config=mkl_aarch64 --cxxopt=-DTAO_AARCH64 --define disc_use_aarch64=true --copt="--stub-group-size=1" --cxxopt="--stub-group-size=1"
+build:disc_aarch64 --config=disc --cxxopt=-DTAO_CPU_ONLY --config=mkl_aarch64 --cxxopt=-DTAO_AARCH64 --define disc_use_aarch64=true --linkopt="-Xlinker --stub-group-size -Xlinker 10000000"
 
 build:disc_mkldnn --config=disc --cxxopt=-DTAO_ENABLE_MKLDNN --define is_mkldnn=true
 build:disc_blaze --config=disc --cxxopt=-DBLAZE_OPT

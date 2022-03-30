@@ -26,7 +26,7 @@ const std::string c_ft_path =
 TEST(TFSumOpTest, ColReduceFullyDynamicShape2DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_col_d_2d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100xf32_X"},
@@ -37,7 +37,7 @@ TEST(TFSumOpTest, ColReduceFullyDynamicShape2DF32) {
 TEST(TFSumOpTest, ColReduceFullyDynamicShape3DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_col_d_3d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100x13xf32_X"},
@@ -48,7 +48,7 @@ TEST(TFSumOpTest, ColReduceFullyDynamicShape3DF32) {
 TEST(TFSumOpTest, ColReduceStaticShape2DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_col_s_2d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100xf32_X"},
@@ -59,7 +59,7 @@ TEST(TFSumOpTest, ColReduceStaticShape2DF32) {
 TEST(TFSumOpTest, ColReduceStaticShape3DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_col_s_3d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100x13xf32_X"},
@@ -70,7 +70,7 @@ TEST(TFSumOpTest, ColReduceStaticShape3DF32) {
 TEST(TFSumOpTest, ColReducePartialDynamicShape2DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_col_p_2d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100xf32_X"},
@@ -81,7 +81,7 @@ TEST(TFSumOpTest, ColReducePartialDynamicShape2DF32) {
 TEST(TFSumOpTest, ColReducePartialDynamicShape3DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_col_p_3d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100x13xf32_X"},
@@ -92,7 +92,7 @@ TEST(TFSumOpTest, ColReducePartialDynamicShape3DF32) {
 TEST(TFSumOpTest, RowReduceFullyDynamicShape2DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_row_d_2d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100xf32_X"},
@@ -103,7 +103,7 @@ TEST(TFSumOpTest, RowReduceFullyDynamicShape2DF32) {
 TEST(TFSumOpTest, ColReduceDynamicShape2DF64) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_col_d_2d_f64.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100xf64_X"},
@@ -114,7 +114,7 @@ TEST(TFSumOpTest, ColReduceDynamicShape2DF64) {
 TEST(TFSumOpTest, RowReduceFullyDynamicShape3DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_row_d_3d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100x4096xf32_X"},
@@ -125,7 +125,7 @@ TEST(TFSumOpTest, RowReduceFullyDynamicShape3DF32) {
 TEST(TFSumOpTest, RowReduceFullyDynamicShape3DF64) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_row_d_3d_f64.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100x4096xf64_X"},
@@ -136,7 +136,7 @@ TEST(TFSumOpTest, RowReduceFullyDynamicShape3DF64) {
 TEST(TFSumOpTest, RowReduceStaticShape2DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_row_s_2d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100xf32_X"},
@@ -147,7 +147,7 @@ TEST(TFSumOpTest, RowReduceStaticShape2DF32) {
 TEST(TFSumOpTest, RowReduceStaticShape2DI32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_row_s_2d_i32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100xi32_X"},
@@ -158,7 +158,7 @@ TEST(TFSumOpTest, RowReduceStaticShape2DI32) {
 TEST(TFSumOpTest, RowReduceStaticShape2DI64) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_row_s_2d_i64.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100xi64_X"},
@@ -180,7 +180,7 @@ TEST(TFSumOpTest, RowReduceStaticShape2DF16) {
 TEST(TFSumOpTest, RowReduceStaticShape3DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_row_s_3d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100x4096xf32_X"},
@@ -191,7 +191,7 @@ TEST(TFSumOpTest, RowReduceStaticShape3DF32) {
 TEST(TFSumOpTest, RowReduceStaticShape3DI64) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_row_s_3d_i64.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100x4096xi64_X"},
@@ -213,7 +213,7 @@ TEST(TFSumOpTest, RowReduceStaticShape3DF16) {
 TEST(TFSumOpTest, RowReducePartialDynamicShape2DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_row_p_2d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100xf32_X"},
@@ -224,7 +224,7 @@ TEST(TFSumOpTest, RowReducePartialDynamicShape2DF32) {
 TEST(TFSumOpTest, RowReducePartialDynamicShape3DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "sum_row_p_3d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 1,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"110x100x4096xf32_X"},

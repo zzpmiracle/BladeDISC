@@ -37,6 +37,10 @@ enum DiscCpuMathKernelMode {
 };
 
 DiscCpuMathKernelMode initDiscCpuMathKernelMode() {
+#if defined(TAO_AARCH64)
+  // MKL is not supported on AArch64
+  return kDiscPreferOneDNN; 
+#endif
   const char* env = getenv("DISC_CPU_MATH_KERNEL_MODE");
   std::string str = (env ? env : "");
   std::transform(str.begin(), str.end(), str.begin(),

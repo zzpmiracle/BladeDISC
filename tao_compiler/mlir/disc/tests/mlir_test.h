@@ -51,7 +51,8 @@ enum class DeviceType { kCPU, kGPU };
 
 enum class BackendType {
   kCuda,
-  kX86  // unimplemented, just placeholder
+  kX86,
+  kAArch64
 };
 
 class MlirTest {

@@ -26,7 +26,7 @@ const std::string c_ft_path =
 TEST(TFFloorModOpTest, StaticShape2DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "floor_mod_s_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 2,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"100x100xf32_X", "100x100xf32_X"},
@@ -37,7 +37,7 @@ TEST(TFFloorModOpTest, StaticShape2DF32) {
 TEST(TFFloorModOpTest, FullyDynamicShape2DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "floor_mod_d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 2,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"100x100xf32_X", "100x100xf32_X"},
@@ -48,7 +48,7 @@ TEST(TFFloorModOpTest, FullyDynamicShape2DF32) {
 TEST(TFFloorModOpTest, PartialShape2DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "floor_mod_p_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 2,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"100x13xf32_X", "100x13xf32_X"},
@@ -59,7 +59,7 @@ TEST(TFFloorModOpTest, PartialShape2DF32) {
 TEST(TFFloorModOpTest, ImplicitBroadcast2DF32) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "floor_mod_d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 2,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"1x100xf32_X", "17x1xf32_X"},
@@ -70,7 +70,7 @@ TEST(TFFloorModOpTest, ImplicitBroadcast2DF32) {
 TEST(TFFloorModOpTest, ProvidedDataShape2DI64) {
   EXPECT_TRUE(feature_test_main(
       /*mlir_file_path*/ c_ft_path + "floor_mod_d_f32.mlir",
-      /*backend_types*/ {BackendType::kCuda, BackendType::kX86},
+      /*backend_types*/ {BackendType::kCuda, BackendType::kX86, BackendType::kAArch64},
       /*num_inputs*/ 2,
       /*num_outputs*/ 1,
       /*input_descriptors*/ {"1x3xf32_X", "1x3xf32_X"},
