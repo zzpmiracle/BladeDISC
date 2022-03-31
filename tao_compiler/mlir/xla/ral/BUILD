@@ -197,9 +197,9 @@ cc_library(
       "-Wl,--end-group",
     ]) + if_disc_aarch64([
       "-Wl,--start-group",
-      "$(location //tao/third_party/mkldnn:build)/acl/ComputeLibrary/build/libarm_compute-static.a",
-      "$(location //tao/third_party/mkldnn:build)/acl/ComputeLibrary/build/libarm_compute_core-static.a",
-      "$(location //tao/third_party/mkldnn:build)/acl/ComputeLibrary/build/libarm_compute_graph-static.a",
+      "$(location //tao/third_party/mkldnn:build)/acl/ComputeLibrary/build/libarm_compute.a",
+      "$(location //tao/third_party/mkldnn:build)/acl/ComputeLibrary/build/libarm_compute_core.a",
+      "$(location //tao/third_party/mkldnn:build)/acl/ComputeLibrary/build/libarm_compute_graph.a",
       "-Wl,--end-group",
     ]),
     data = ["//tao/third_party/mkldnn:build"],
