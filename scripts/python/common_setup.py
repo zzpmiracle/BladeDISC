@@ -258,7 +258,6 @@ def acl_root_dir(root):
     return os.path.join(acl_install_dir(root), 'ComputeLibrary')
 
 def config_mkldnn(root, args):
-    return
     build_dir = mkldnn_build_dir(root)
     ensure_empty_dir(build_dir, clear_hidden=False)
     mkl_dir = mkl_install_dir(root)
@@ -279,7 +278,24 @@ def config_mkldnn(root, args):
     if args.aarch64:
         with cwd(acl_dir):
             # downlaod and build acl for onednn
-            execute('../../oneDNN/.github/automation/build_acl.sh  --version 22.02 --arch arm64-v8a --root-dir {}'.format(acl_root))
+            cmd = '''
+              readonly ACL_REPO="https://github.com/ARM-software/ComputeLibrary.git"
+              MAKE_NP="-j$(grep -c processor /proc/cpuinfo)"
+
+              ACL_DIR={}
+              git clone --branch v22.02 --depth 1 $ACL_REPO $ACL_DIR
+              cd $ACL_DIR
+
+              scons --silent $MAKE_NP Werror=0 debug=0 neon=1 opencl=0 embed_kernels=0 os=linux arch=arm64-v8a build=native extra_cxx_flags="-fPIC"
+
+              exit $?
+            '''.format(acl_root)
+            execute(cmd)
+            # a workaround for static linking
+            execute('rm -f ComputeLibrary/build/*.so')
+            execute('mv ComputeLibrary/build/libarm_compute-static.a ComputeLibrary/build/libarm_compute.a')
+            execute('mv ComputeLibrary/build/libarm_compute_core-static.a ComputeLibrary/build/libarm_compute_core.a')
+            execute('mv ComputeLibrary/build/libarm_compute_graph-static.a ComputeLibrary/build/libarm_compute_graph.a')
 
     with cwd(build_dir):
         cc = which("gcc")

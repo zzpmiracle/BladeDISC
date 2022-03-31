@@ -155,6 +155,14 @@ if(${TAO_CPU_ONLY})
   add_compile_options(-DTAO_CPU_ONLY)
 endif()
 
+if(${TAO_X86})
+  add_compile_options(-DTAO_X86)
+endif()
+
+if(${TAO_AARCH64})
+  add_compile_options(-DTAO_AARCH64)
+endif()
+
 if(${BLAZE_OPT})
   add_compile_options(-DBLAZE_OPT)
 endif()

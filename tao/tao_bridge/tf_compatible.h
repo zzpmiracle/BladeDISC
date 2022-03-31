@@ -34,6 +34,10 @@
 #include "tensorflow/core/kernels/bounds_check.h"
 #endif
 
+#if TF_MAJOR_VERSION > 2 || (TF_MAJOR_VERSION == 2 && TF_MINOR_VERSION > 7)
+#include "tensorflow/core/framework/resource_mgr.h"
+#endif
+
 // put these macros in the end for new version absl also defined them
 #if TF_MAJOR_VERSION > 1
 // TF2.4

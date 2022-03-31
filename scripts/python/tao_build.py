@@ -44,6 +44,7 @@ from common_setup import (
     running_on_ci,
     ci_build_flag,
     remote_cache_token,
+    acl_root_dir,
 )
 
 from tao_common import (
@@ -176,6 +177,7 @@ def configure(root, args):
     with cwd(tao_bridge_build_dir), gcc_env(args.bridge_gcc):
         cc = which("gcc")
         cxx = which("g++")
+        envs = " CC={} CXX={} ".format(cc, cxx)
         if args.build_in_tf_addon:
             # called from tensorflow_addons
             flags = "-DTAO_ENABLE_WARMUP_XFLOW=OFF"
@@ -198,10 +200,14 @@ def configure(root, args):
             flags +=" -DMKL_ROOT={} ".format(mkl_install_dir(root))
         flags += " -DTAO_X86={}".format(args.x86)
         flags += " -DTAO_AARCH64={}".format(args.aarch64)
+        if args.aarch64:
+             acl_root = acl_root_dir(root)
+             envs += " ACL_ROOT_DIR={} ".format(acl_root)
+             flags += " -DDNNL_AARCH64_USE_ACL=ON "
 
         cmake_cmd = (
-            "CC={} CXX={} cmake .. -DPYTHON={}/bin/{} {}".format(
-                cc, cxx, args.venv_dir, PYTHON_BIN_NAME, flags
+            "{} cmake .. -DPYTHON={}/bin/{} {}".format(
+                envs, args.venv_dir, PYTHON_BIN_NAME, flags
             )
         )
         logger.info("configuring tao_bridge ......")
